@@ -6,7 +6,7 @@ from scipy.sparse import linalg
 
 # Absolute Import Path
 from src import cg
-
+from src.optimiser_func_set import rosenbrock, derivative_rosenbrock
 
 
 def test_conjugate_gradient():
@@ -38,5 +38,14 @@ def test_conjugate_gradient():
 #     A_sparse = diags([diagonal, off_diagonal, off_diagonal], [0, -1, 1], format='csr')
 
 
-# def test_nonlinear_conjugate_gradient():
-#
+def test_nonlinear_conjugate_gradient():
+    x_min = np.array([1.0, 1.0])
+    # For x0 = np.array([-1.0, 0.8]), this was not converging
+    x0 = np.array([0.2, 0.5])
+    x, n_iter = cg.nonlinear_conjugate_gradient(rosenbrock,
+                                                derivative_rosenbrock,
+                                                x0,
+                                                n_iter=2000,
+                                                tol=1.e-5)
+    assert n_iter == 1269, "Converged before hit max iterations"
+    assert np.allclose(x, x_min, atol=1.e-4)

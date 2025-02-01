@@ -9,6 +9,8 @@ from collections.abc import Callable
 
 import numpy as np
 
+from src.linesearch import line_search_backtrack
+
 
 def conjugate_gradient(A: np.ndarray, x0: np.ndarray, b: np.ndarray, tol=1.e-8, n_iter=400) -> Tuple[np.ndarray, int]:
     r""" Solve the linear system of equations
@@ -94,39 +96,6 @@ FuncType = Callable[[np.ndarray], float]
 # Define a derivative that accepts a vector and returns a vector
 DerFuncType = Callable[[np.ndarray], np.ndarray]
 
-def line_search_backtrack(f: FuncType,
-                          df: FuncType,
-                          x: np.ndarray,
-                          d: np.ndarray,
-                          alpha0: float,
-                          reduction_factor=0.5,
-                          p_decrease=1.e-4) -> float:
-    """ Perform a line search using backtracking.
-
-    Iteratively check if (x + alpha d) provides a sufficient decrease in the function value,
-    as defined by the Armijo condition.
-
-    :param f: Function
-    :param df: Derivative of function f
-    :param x: variable
-    :param d: Search direction
-    :param alpha0: Initial guess at step length, alpha. 1 is reasonable
-    :param reduction_factor: Amount the step length is reduced per iteration
-    :param p_decrease: Decrease factor
-    :return: alpha: Step length
-    """
-    assert 0 < reduction_factor < 1, \
-        "Reduction factor must be > 0 and < 1"
-
-    assert 0 < p_decrease < 1, \
-        "Decrease parameter must be > 0 and < 1"
-
-    alpha = alpha0
-    while f(x + alpha * d) > f(x) + (p_decrease * alpha * np.dot(df(x), d)):
-        alpha *= reduction_factor
-
-    return alpha
-
 
 def fletcher_reeves_coefficient(g: np.ndarray, g_next: np.ndarray) -> float:
     return np.dot(g_next, g_next) / np.dot(g, g)
@@ -136,8 +105,14 @@ def nonlinear_conjugate_gradient(f: FuncType,
                                  df: FuncType,
                                  x0: np.ndarray,
                                  n_iter=100,
-                                 tol=1.e-8) -> np.ndarray:
-    """
+                                 tol=1.e-8):
+    """Non-linear conjugate gradient.
+
+    Note: The current implementation is not that robust.
+    Implement:
+    * A more sophisticated line search
+    * Introduce a restart mechanism, resetting the search direction to –g when appropriate
+    * Change the definition of the coefficient beta.
 
     :param f:  Function to optimise
     :param df: Derivative of f
@@ -168,13 +143,13 @@ def nonlinear_conjugate_gradient(f: FuncType,
 
         # Check convergence
         if np.linalg.norm(g_next) <= tol:
-            return x
+            return x, k
 
         # Update search direction
         g = g_next
         d = -g + beta * d
 
-    return x
+    return x, n_iter
 
 
 # Implement me
