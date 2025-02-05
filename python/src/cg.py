@@ -9,7 +9,7 @@ from collections.abc import Callable
 
 import numpy as np
 
-from src.linesearch import line_search_backtrack
+from src.linesearch import line_search_backtrack, line_search_strong_wolfe_conditions
 
 
 def conjugate_gradient(A: np.ndarray, x0: np.ndarray, b: np.ndarray, tol=1.e-8, n_iter=400) -> Tuple[np.ndarray, int]:
@@ -52,7 +52,7 @@ def preconditioned_conjugate_gradient(A: np.ndarray,
                                       b: np.ndarray,
                                       M: np.ndarray,
                                       tol=1.e-8,
-                                      n_iter=400) \
+                                      max_iter=400) \
         -> Tuple[np.ndarray, int]:
     r""" Solve the linear system of equations
 
@@ -77,7 +77,7 @@ def preconditioned_conjugate_gradient(A: np.ndarray,
     z = np.linalg.solve(M, r)
     p = np.copy(z)
 
-    for k in range(n_iter):
+    for k in range(max_iter):
         alpha = (r.T @ r) / (p.T @ (A @ p))
         x = x + alpha * p
         r_next = r - alpha * (A @ p)
@@ -87,7 +87,7 @@ def preconditioned_conjugate_gradient(A: np.ndarray,
         p = r_next + (beta * p)
         r = r_next
 
-    return x, n_iter
+    return x, max_iter
 
 
 # Define a function that evaluates a vector to a float.
@@ -104,7 +104,7 @@ def fletcher_reeves_coefficient(g: np.ndarray, g_next: np.ndarray) -> float:
 def nonlinear_conjugate_gradient(f: FuncType,
                                  df: DerFuncType,
                                  x0: np.ndarray,
-                                 n_iter=500,
+                                 max_iter=500,
                                  tol=1.e-6):
     """Non-linear conjugate gradient.
 
@@ -128,7 +128,7 @@ def nonlinear_conjugate_gradient(f: FuncType,
     # Initialise step size
     alpha = 1
 
-    for k in range(0, n_iter):
+    for k in range(0, max_iter):
         # Line search
         alpha = line_search_backtrack(f, df, x, d, alpha)
 
@@ -149,7 +149,7 @@ def nonlinear_conjugate_gradient(f: FuncType,
         g = g_next
         d = -g + beta * d
 
-    return x, n_iter
+    return x, max_iter
 
 
 def update_hessian(s: np.ndarray, y: np.ndarray, Hess: np.ndarray) -> np.ndarray:
@@ -167,18 +167,18 @@ def update_hessian(s: np.ndarray, y: np.ndarray, Hess: np.ndarray) -> np.ndarray
     assert np.size(y) == n, "s and y must have same size"
     assert Hess.shape == (n, n)
     # If this is not true, the line search is likely the issue
-    assert np.dot(y, s) > 0, "Expect y dot s > 0"
+    assert np.dot(y, s) > 0, f"Expect y dot s > 0 {np.dot(y, s)}"
 
     p = 1. / (np.dot(y, s))
     id = np.eye(n, n)
 
-    return (id - p * (s @ y.T)) @ Hess @ (id - p * (y @ s.T)) + (p * s @ s.T)
+    return (id - p * np.outer(s, y.T)) @ Hess @ (id - p * np.outer(y, s.T)) + (p * np.outer(s, s.T))
 
 
 def bfgs_optimiser(f: FuncType,
                    df: DerFuncType,
                    x0: np.ndarray,
-                   max_iter=500,
+                   max_iter=1000,
                    tol=1.e-6):
     """BFGS.
 
@@ -200,7 +200,6 @@ def bfgs_optimiser(f: FuncType,
     # Initialise variable
     x = np.copy(x0)
     # Initialise approximate inverse Hessian
-    # TODO Scale the diagonal with what?
     Hess = np.eye(n, n)
     # Initialise gradient at x0
     grad = df(x)
@@ -233,7 +232,7 @@ def bfgs_optimiser(f: FuncType,
 
         # Scale with an estimate of the curvature of the function at the starting point
         if k == 0:
-            scaling_factor = np.dot(s, y) / np.dot(y, y)
+            scaling_factor = np.dot(s, y) / (np.dot(y, y) + 1e-8)
             Hess *= scaling_factor
 
         # Update the inv Hessian approximation
