@@ -231,9 +231,9 @@ def bfgs_optimiser(f: FuncType,
         y = grad - y
 
         # Scale with an estimate of the curvature of the function at the starting point
-        if k == 0:
-            scaling_factor = np.dot(s, y) / (np.dot(y, y) + 1e-8)
-            Hess *= scaling_factor
+        # if k == 0:
+        #     scaling_factor = np.dot(s, y) / (np.dot(y, y) + 1e-8)
+        #     Hess *= scaling_factor
 
         # Update the inv Hessian approximation
         Hess = update_hessian(s, y, Hess)
