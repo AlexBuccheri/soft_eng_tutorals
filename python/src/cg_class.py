@@ -5,7 +5,34 @@ import numpy as np
 
 from src.cg_abstract_class import FuncType, DerFuncType, NLConjugateGradient
 from src.linesearch import line_search_backtrack
-from src.cg import update_hessian
+from src.cg import update_hessian, fletcher_reeves_coefficient
+
+
+class NLCG(NLConjugateGradient):
+
+    def __init__(self, f: FuncType,
+                 df: DerFuncType,
+                 x0: np.ndarray,
+                 max_iter=500,
+                 tol=1.e-6):
+        super().__init__(f, df,
+                         x0,
+                         max_iter= max_iter,
+                         tol=tol)
+        # Initialise coefficient
+        self.hess = 0
+
+    def initialise_search_direction(self) -> np.ndarray:
+        return - self.g
+
+    def line_search(self) -> float:
+        return line_search_backtrack(self.f, self.df, self.x, self.d, self.alpha)
+
+    def update_hessian_or_coefficient(self) -> float:
+        return fletcher_reeves_coefficient(self.g, self.g_next)
+
+    def update_search_direction(self) -> np.ndarray:
+        return -self.g + self.hess * self.d
 
 
 class BFGS(NLConjugateGradient):
