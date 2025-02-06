@@ -19,8 +19,6 @@ class NLCG(NLConjugateGradient):
                          x0,
                          max_iter= max_iter,
                          tol=tol)
-        # Initialise coefficient
-        self.hess = 0
 
     def initialise_search_direction(self) -> np.ndarray:
         return - self.g
@@ -32,7 +30,7 @@ class NLCG(NLConjugateGradient):
         return fletcher_reeves_coefficient(self.g, self.g_next)
 
     def update_search_direction(self) -> np.ndarray:
-        return -self.g + self.hess * self.d
+        return -self.g_next + self.hess * self.d
 
 
 class BFGS(NLConjugateGradient):
@@ -62,4 +60,4 @@ class BFGS(NLConjugateGradient):
         return update_hessian(s, y, self.hess)
 
     def update_search_direction(self) -> np.ndarray:
-        return -self.hess @ self.g
+        return -self.hess @ self.g_next

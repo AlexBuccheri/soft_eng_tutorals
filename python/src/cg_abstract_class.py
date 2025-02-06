@@ -1,9 +1,8 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable
-from typing import Tuple
+from typing import Tuple, Optional, List
 
 import numpy as np
-
 
 # Define a function that evaluates a vector to a float.
 FuncType = Callable[[np.ndarray], float]
@@ -15,16 +14,19 @@ DerFuncType = Callable[[np.ndarray], np.ndarray]
 class NLConjugateGradient(ABC):
 
     def __init__(self, f: FuncType,
-                       df: DerFuncType,
-                       x0: np.ndarray,
-                       max_iter=500,
-                       tol=1.e-6):
+                 df: DerFuncType,
+                 x0: np.ndarray,
+                 max_iter: Optional[float] = 500,
+                 tol: Optional[float] = 1.e-6,
+                 hooks: Optional[List[Callable]] = None):
         """Initialise variables prior to CG loop
         """
         self.f = f
         self.df = df
         self.max_iter = max_iter
         self.tol = tol
+        if hooks is None:
+            self.hooks = []
 
         # Initialise variable
         self.x = np.copy(x0)
@@ -34,6 +36,10 @@ class NLConjugateGradient(ABC):
         self.alpha = 1
         # Zero the search direction
         self.d = 0
+        # Zero coefficient or apporx inv Hessian
+        self.hess = 0
+        # Zero iteration counter
+        self.k = 0
 
     @abstractmethod
     def initialise_search_direction(self) -> float:
@@ -55,6 +61,10 @@ class NLConjugateGradient(ABC):
 
     @abstractmethod
     def update_search_direction(self) -> np.ndarray:
+        """ Update the search direction, self.d
+        This should use self.g_next, as the vectors x and gradient g
+        are the last quantities to be updated, per iteration
+        """
         pass
 
     def minimize(self) -> Tuple[np.ndarray, int]:
@@ -63,6 +73,8 @@ class NLConjugateGradient(ABC):
         self.d = self.initialise_search_direction()
 
         for k in range(0, self.max_iter):
+            self.k = k
+
             # Compute new step length
             self.alpha = self.line_search()
 
@@ -72,13 +84,15 @@ class NLConjugateGradient(ABC):
             # Compute new gradient
             self.g_next = self.df(self.x_next)
 
-            # TODO. See if one can add a hook
+            # Call any optional functions prior to updating the Hessian/coefficient
+            for func in self.hooks:
+                func()
 
             # Update coefficient or approx inv Hessian
             self.hess = self.update_hessian_or_coefficient()
 
             if np.linalg.norm(self.g_next) <= self.tol:
-                return self.x_next, k
+                return self.x_next, self.k
 
             # Update quantities
             self.d = self.update_search_direction()

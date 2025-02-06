@@ -63,12 +63,13 @@ def test_bfgs_optimiser():
                              tol=1.e-4)
 
     print(f"Func. {n_iter} iterations to get x_min", x)
-    # assert n_iter == 3000, "BFGS does not quite reach convergence"
-    # assert np.allclose(x, x_min, atol=1.e-3)
+    assert n_iter == 3000, "BFGS does not quite reach convergence"
+    assert np.allclose(x, x_min, atol=1.e-3)
 
 
 def test_bfgs__obj():
-    x_min = np.array([1.0, 1.0])
+    # Result from `test_bfgs_optimiser`
+    x_ref = np.array([0.9999086,  0.99981565])
     x0 = np.array([0.2, 0.5])
 
     bfgs = cg_class.BFGS(rosenbrock,
@@ -78,6 +79,4 @@ def test_bfgs__obj():
                          tol=1.e-4)
 
     x, n_iter = bfgs.minimize()
-
-    print(f"Class. {n_iter} iterations to get x_min", x)
-
+    assert np.allclose(x, x_ref), "Result should be the same as the function design"
