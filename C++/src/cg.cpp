@@ -18,7 +18,7 @@ arma::vec linear_conjugate_gradient(const arma::mat & a,
 
         for (int k = 0; k < max_iter; ++k) {
             const arma::vec ap = a * p;
-            const double alpha = arma::dot(r.t(), r) / arma::dot(p.t(), ap);
+            const double alpha = arma::dot(r, r) / arma::dot(p, ap);
             x += alpha * p;
             const arma::vec r_next = r - alpha * ap;
 
@@ -27,13 +27,15 @@ arma::vec linear_conjugate_gradient(const arma::mat & a,
                 return x;
             }
 
-            const double beta = arma::dot(r_next.t(), r_next) / arma::dot(r.t(), r);
+            const double beta = arma::dot(r_next, r_next) / arma::dot(r, r);
             p = r_next + beta * p;
             r = r_next;
         }
 
         return x;
     }
+
+
 
 
 } // namespace algorithms
