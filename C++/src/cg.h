@@ -1,8 +1,14 @@
 #ifndef IMRESS_CG_H
 #define IMRESS_CG_H
 
-namespace algorithms {
+#include <iostream>
+#include <vector>
+#include <functional>
+#include <cmath>
 
+#include <armadillo>
+
+namespace algorithms {
 
     /**
      * @brief Solves the linear system of equations A * x = b using the
@@ -24,6 +30,52 @@ namespace algorithms {
                                         const arma::vec &b,
                                         double tol = 1e-8,
                                         int max_iter = 1000);
+
+
+    // Define a mathematical function that evaluates a vector to a float.
+    using FuncType = std::function<double(const arma::vec&)>;
+
+    // Define a derivative that accepts a vector and returns a vector of the same length.
+    using DerFuncType = std::function<arma::vec&(const arma::vec&)>;
+
+    // Store results of a conjugate gradient calculation
+    struct CGResult{
+        arma::vec x;
+        int n_iter;
+    };
+
+    // Generic line search function signature
+    template<typename... ExtraArgs>
+    using LineSearchFuncVar = std::function<double(const FuncType &,
+                                                const DerFuncType &,
+                                                const arma::vec &,
+                                                const arma::vec &,
+                                                double,
+                                                ExtraArgs...)>;
+
+    // Line search function signature with no optional arguments
+    using LineSearchFunc = LineSearchFuncVar<>;
+
+    // Backtrack function signature. Extra arguments are reduction factor and c1
+    using LineSearchBackTrackFunc = LineSearchFuncVar<double, double>;
+
+    // TODO Document me
+    double line_search_backtrack(const FuncType & f,
+                                 const DerFuncType & df,
+                                 const arma::vec & x,
+                                 const arma::vec & direction,
+                                 double alpha0,
+                                 double reduction_factor=0.5,
+                                 double c1=1.e-4);
+
+    // TODO Document me
+    CGResult non_linear_conjugate_gradient(const FuncType & f,
+                                           const DerFuncType & df,
+                                           const arma::vec & x0,
+                                           LineSearchFunc&,
+                                           int max_iter=1000,
+                                           double tol=1.e-6);
+
 }
 
 #endif //IMRESS_CG_H
