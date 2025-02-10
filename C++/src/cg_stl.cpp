@@ -9,7 +9,7 @@
 
 #include "cg_stl.h"
 
-namespace algorithms {
+namespace algorithms::stl{
 
     double dot(const std::vector<double> & u, const std::vector<double> & v){
         // Check size consistency - could be superfluous?
@@ -26,10 +26,11 @@ namespace algorithms {
 
     std::vector<double> matrix_vector_product(const matrix & a,
                                               const std::vector<double> & x){
-        // TODO Check these work as expected
         const uint n_row = a.size();
         const uint n_col = a[0].size();
-        assert(x.size() == n_row);
+        if (x.size() != n_row) {
+            throw std::invalid_argument("Vector x must have length equal to the number of matrix rows");
+        }
 
         std::vector<double> b(n_row, 0.0);
         for (int i = 0; i < n_row; ++i) {
@@ -50,7 +51,7 @@ namespace algorithms {
         std::vector<double> u_minus_v(u.size());
 
         for (int i = 0; i < u.size(); ++i) {
-            u_minus_v.push_back(u[i] - v[i]);
+            u_minus_v[i] = u[i] - v[i];
         }
 
         return u_minus_v;
@@ -65,7 +66,7 @@ namespace algorithms {
         std::vector<double> u_plus_v(u.size());
 
         for (int i = 0; i < u.size(); ++i) {
-            u_plus_v.push_back(u[i] + v[i]);
+            u_plus_v[i] = u[i] + v[i];
         }
 
         return u_plus_v;
@@ -74,8 +75,8 @@ namespace algorithms {
     std::vector<double> vector_scale(const std::vector<double> & u,
                                      const double alpha){
         std::vector<double> u_scaled(u.size());
-        for(auto element : u){
-            u_scaled.push_back(element * alpha);
+        for (int i = 0; i < u.size(); ++i) {
+            u_scaled[i] = alpha * u[i];
         }
 
         return u_scaled;
@@ -99,7 +100,7 @@ namespace algorithms {
             const double alpha = dot(r, r) / dot(p, ap);
             const auto alpha_times_p = vector_scale(p, alpha);
             x = vector_add(x, alpha_times_p);
-            const auto r_next = vector_subtract(r, ap);
+            const auto r_next = vector_subtract(r, vector_scale(ap, alpha));
 
             if (norm(r_next) < tol) {
                 return x;
@@ -113,4 +114,4 @@ namespace algorithms {
         return x;
     }
 
-} // namespace algorithms
+} // namespace algorithms::stl
