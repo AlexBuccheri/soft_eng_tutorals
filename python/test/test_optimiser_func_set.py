@@ -1,18 +1,12 @@
-""" Test optimiser functions and their derivatives.
-"""
-from collections.abc import Callable
-import sys
+"""Test optimiser functions and their derivatives."""
 
 import numpy as np
-
-
 from src.finite_difference import central_difference
-from src.optimiser_func_set import rosenbrock, derivative_rosenbrock
+from src.optimiser_func_set import derivative_rosenbrock, rosenbrock
 
 
 def test_derivative_rosenbrock():
-    """ Test analytic gradient against finite difference
-    """
+    """Test analytic gradient against finite difference"""
     # Some x-value that is not the global minimum, (1, 1)
     x = np.array([-1.2, 1.0])
     grad_fd = central_difference(rosenbrock, x)

@@ -1,19 +1,21 @@
-""" Implementations of conjugate gradient
+"""Implementations of conjugate gradient
 
 * Functional
 * Abstract class
 * Plugin
 """
-from typing import Tuple
+
 from collections.abc import Callable
+from typing import Tuple
 
 import numpy as np
+from src.linesearch import line_search_backtrack
 
-from src.linesearch import line_search_backtrack, line_search_strong_wolfe_conditions
 
-
-def conjugate_gradient(A: np.ndarray, x0: np.ndarray, b: np.ndarray, tol=1.e-8, n_iter=400) -> Tuple[np.ndarray, int]:
-    r""" Solve the linear system of equations
+def conjugate_gradient(
+    A: np.ndarray, x0: np.ndarray, b: np.ndarray, tol=1.0e-8, n_iter=400
+) -> Tuple[np.ndarray, int]:
+    r"""Solve the linear system of equations
 
     \mathbf{A} \mathbf{x} = \mathbf{b}
 
@@ -47,14 +49,15 @@ def conjugate_gradient(A: np.ndarray, x0: np.ndarray, b: np.ndarray, tol=1.e-8, 
     return x, n_iter
 
 
-def preconditioned_conjugate_gradient(A: np.ndarray,
-                                      x0: np.ndarray,
-                                      b: np.ndarray,
-                                      M: np.ndarray,
-                                      tol=1.e-8,
-                                      max_iter=400) \
-        -> Tuple[np.ndarray, int]:
-    r""" Solve the linear system of equations
+def preconditioned_conjugate_gradient(
+    A: np.ndarray,
+    x0: np.ndarray,
+    b: np.ndarray,
+    M: np.ndarray,
+    tol=1.0e-8,
+    max_iter=400,
+) -> Tuple[np.ndarray, int]:
+    r"""Solve the linear system of equations
 
     \mathbf{A} \mathbf{x} = \mathbf{b}
 
@@ -101,11 +104,9 @@ def fletcher_reeves_coefficient(g: np.ndarray, g_next: np.ndarray) -> float:
     return np.dot(g_next, g_next) / np.dot(g, g)
 
 
-def nonlinear_conjugate_gradient(f: FuncType,
-                                 df: DerFuncType,
-                                 x0: np.ndarray,
-                                 max_iter=500,
-                                 tol=1.e-6):
+def nonlinear_conjugate_gradient(
+    f: FuncType, df: DerFuncType, x0: np.ndarray, max_iter=500, tol=1.0e-6
+):
     """Non-linear conjugate gradient.
 
     Note: The current implementation is not that robust.
@@ -152,8 +153,10 @@ def nonlinear_conjugate_gradient(f: FuncType,
     return x, max_iter
 
 
-def update_hessian(s: np.ndarray, y: np.ndarray, Hess: np.ndarray) -> np.ndarray:
-    """ Update the Hessian in BFGS.
+def update_hessian(
+    s: np.ndarray, y: np.ndarray, Hess: np.ndarray
+) -> np.ndarray:
+    """Update the Hessian in BFGS.
 
     Maintain the symmetry and positive definiteness of Hₖ
     TODO Add expression for this approximation update.
@@ -169,17 +172,17 @@ def update_hessian(s: np.ndarray, y: np.ndarray, Hess: np.ndarray) -> np.ndarray
     # If this is not true, the line search is likely the issue
     assert np.dot(y, s) > 0, f"Expect y dot s > 0 {np.dot(y, s)}"
 
-    p = 1. / (np.dot(y, s))
+    p = 1.0 / (np.dot(y, s))
     id = np.eye(n, n)
 
-    return (id - p * np.outer(s, y.T)) @ Hess @ (id - p * np.outer(y, s.T)) + (p * np.outer(s, s.T))
+    return (id - p * np.outer(s, y.T)) @ Hess @ (id - p * np.outer(y, s.T)) + (
+        p * np.outer(s, s.T)
+    )
 
 
-def bfgs_optimiser(f: FuncType,
-                   df: DerFuncType,
-                   x0: np.ndarray,
-                   max_iter=1000,
-                   tol=1.e-6):
+def bfgs_optimiser(
+    f: FuncType, df: DerFuncType, x0: np.ndarray, max_iter=1000, tol=1.0e-6
+):
     """BFGS.
 
     Scaling of the Hessian in the first iteration:
@@ -204,7 +207,7 @@ def bfgs_optimiser(f: FuncType,
     # Initialise gradient at x0
     grad = df(x)
     # Initialise search direction
-    d = - Hess @ grad
+    d = -Hess @ grad
     # Initialise step size
     alpha = 1
 

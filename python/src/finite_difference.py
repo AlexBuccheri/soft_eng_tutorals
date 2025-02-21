@@ -1,13 +1,15 @@
-""" Compute derivatives with finite difference
-"""
-from collections.abc import Callable
+"""Compute derivatives with finite difference"""
+
 import sys
+from collections.abc import Callable
 
 import numpy as np
 
 
-def central_difference(f: Callable[[np.ndarray], float], x: np.ndarray) -> np.ndarray:
-    """ Compute finite derivatives using central difference
+def central_difference(
+    f: Callable[[np.ndarray], float], x: np.ndarray
+) -> np.ndarray:
+    """Compute finite derivatives using central difference
     Note, oscillating functions can yield zero derivative.
     :param f:
     :param x:

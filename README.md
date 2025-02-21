@@ -46,14 +46,9 @@ Implement in fortran, python and C++:
 - [ ] Document the implementations more thoroughly.
 
 **python**
-
-- [ ] Test BFGS
-- [ ] Add a pyproject toml
-- [ ] Implement more robust linear search
 - [ ] Abstract non-linear CG and BFGS, such that one can write the generic algorithm once,
 then inject the implementation/method
    - Inject all the functions as arguments
-   - Class design
    - Plugin design
 
 **C++** 

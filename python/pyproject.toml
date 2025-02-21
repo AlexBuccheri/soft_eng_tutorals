@@ -1,0 +1,87 @@
+# Based on https://github.com/AlexBuccheri/python_cookie_cutter
+
+# Note, if not specified setuptools is defaulted to
+[build-system]
+requires = ["setuptools >= 61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+# Spaces in names violates pep508-identifier
+name = "IMPRESPython"
+version = "0.0.1"
+authors = [{name = "Alex Buccheri"}]
+readme = "README.md"
+requires-python = ">=3.9"
+# Pinned project dependencies
+# requirements.txt generated from here
+dependencies = [
+  "matplotlib==3.8.0",
+  "numpy==1.26.1"
+]
+
+# TO ADD
+[project.urls]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+# Pinned project dependencies for development
+# requirements-dev.txt generated from here
+[project.optional-dependencies]
+dev = [
+  "ruff>=0.1.8",
+  "black>=22.10.0",
+  "isort>=5.10.1",
+  "pip-tools>=6.10.0",
+  "pytest>=7.2.0",
+  "pytest-cov>=4.0.0",
+  "sphinx>=7.2.6",
+  "sphinx-rtd-theme==2.0.0",
+  "tox>=4.11.4"
+]
+
+# linting config
+[tool.ruff.lint]
+ignore = ["E501",  # line too long
+  "E731"           # I like to name lambdas
+]
+
+# isort config
+[tool.isort]
+profile = "black"
+line_length = 79
+skip = [".env/", "venv/", ".venv/"]
+
+# coverage config
+[tool.coverage.paths]
+source = ["src"]
+
+[tool.coverage.run]
+branch = true
+relative_files = true
+
+[tool.coverage.report]
+show_missing = true
+fail_under = 80
+
+# formatting config
+[tool.black]
+line-length = 79
+extend-exclude = '''
+/(
+  | .env
+  | .venv
+  | venv
+  | notebooks
+)/
+'''
+
+# pytest config - new in v6.0
+# Instead of specifying pytest.ini
+# See: https://docs.pytest.org/en/7.1.x/reference/customize.html
+[tool.pytest.ini_options]
+minversion = "6.0"
+addopts = "-v --doctest-modules"
+testpaths = [
+    "test",
+]

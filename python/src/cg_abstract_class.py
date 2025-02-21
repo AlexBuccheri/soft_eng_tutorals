@@ -1,6 +1,6 @@
 from abc import ABC, abstractmethod
 from collections.abc import Callable
-from typing import Tuple, Optional, List
+from typing import List, Optional, Tuple
 
 import numpy as np
 
@@ -13,14 +13,16 @@ DerFuncType = Callable[[np.ndarray], np.ndarray]
 
 class NLConjugateGradient(ABC):
 
-    def __init__(self, f: FuncType,
-                 df: DerFuncType,
-                 x0: np.ndarray,
-                 max_iter: Optional[float] = 500,
-                 tol: Optional[float] = 1.e-6,
-                 hooks: Optional[List[Callable]] = None):
-        """Initialise variables prior to CG loop
-        """
+    def __init__(
+        self,
+        f: FuncType,
+        df: DerFuncType,
+        x0: np.ndarray,
+        max_iter: Optional[float] = 500,
+        tol: Optional[float] = 1.0e-6,
+        hooks: Optional[List[Callable]] = None,
+    ):
+        """Initialise variables prior to CG loop"""
         self.f = f
         self.df = df
         self.max_iter = max_iter
@@ -36,20 +38,19 @@ class NLConjugateGradient(ABC):
         self.alpha = 1
         # Zero the search direction
         self.d = 0
-        # Zero coefficient or apporx inv Hessian
+        # Zero coefficient or approx inv Hessian
         self.hess = 0
         # Zero iteration counter
         self.k = 0
 
     @abstractmethod
     def initialise_search_direction(self) -> float:
-        """Initialise the search direction,
-        """
+        """Initialise the search direction,"""
         pass
 
     @abstractmethod
     def line_search(self) -> float:
-        """ Perform a line search
+        """Perform a line search
 
         Describe more in more detail
         """
@@ -61,15 +62,14 @@ class NLConjugateGradient(ABC):
 
     @abstractmethod
     def update_search_direction(self) -> np.ndarray:
-        """ Update the search direction, self.d
+        """Update the search direction, self.d
         This should use self.g_next, as the vectors x and gradient g
         are the last quantities to be updated, per iteration
         """
         pass
 
     def minimize(self) -> Tuple[np.ndarray, int]:
-        """ Minimize f(x) using non-linear CG
-        """
+        """Minimize f(x) using non-linear CG"""
         self.d = self.initialise_search_direction()
 
         for k in range(0, self.max_iter):
