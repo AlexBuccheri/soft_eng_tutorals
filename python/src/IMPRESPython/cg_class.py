@@ -1,8 +1,8 @@
 import numpy as np
 
-from src.cg import fletcher_reeves_coefficient, update_hessian
-from src.cg_abstract_class import DerFuncType, FuncType, NLConjugateGradient
-from src.linesearch import line_search_backtrack
+from IMPRESPython.cg import fletcher_reeves_coefficient, update_hessian
+from IMPRESPython.cg_abstract_class import DerFuncType, FuncType, NLConjugateGradient
+from IMPRESPython.linesearch import line_search_backtrack
 
 
 class NLCG(NLConjugateGradient):

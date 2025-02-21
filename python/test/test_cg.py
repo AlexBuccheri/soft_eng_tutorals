@@ -3,8 +3,8 @@
 import numpy as np
 
 # Absolute Import Path
-from src import cg, cg_class
-from src.optimiser_func_set import derivative_rosenbrock, rosenbrock
+from IMPRESPython import cg, cg_class
+from IMPRESPython.optimiser_func_set import derivative_rosenbrock, rosenbrock
 
 # from scipy.sparse import diags
 from scipy.sparse import linalg

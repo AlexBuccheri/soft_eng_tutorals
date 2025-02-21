@@ -1,7 +1,7 @@
 """Nonlinear CG functions, with more generic API"""
 
 import numpy as np
-from src import cg
+from IMPRESPython import cg
 
 
 def initialise_search_direction(g: np.ndarray, *args, **kwargs): ...

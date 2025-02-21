@@ -1,8 +1,8 @@
 """Test optimiser functions and their derivatives."""
 
 import numpy as np
-from src.finite_difference import central_difference
-from src.optimiser_func_set import derivative_rosenbrock, rosenbrock
+from IMPRESPython.finite_difference import central_difference
+from IMPRESPython.optimiser_func_set import derivative_rosenbrock, rosenbrock
 
 
 def test_derivative_rosenbrock():

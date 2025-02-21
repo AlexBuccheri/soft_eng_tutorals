@@ -9,7 +9,7 @@ from collections.abc import Callable
 from typing import Tuple
 
 import numpy as np
-from src.linesearch import line_search_backtrack
+from IMPRESPython.linesearch import line_search_backtrack
 
 
 def conjugate_gradient(
