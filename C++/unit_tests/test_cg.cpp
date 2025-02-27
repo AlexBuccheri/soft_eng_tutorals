@@ -3,9 +3,9 @@
 #include <armadillo>
 #include <catch2/catch_all.hpp>
 
-#include "cg.h"
+#include "optimisers/cg.h"
 
-TEST_CASE("Linear Conjugate Gradient", "[algorithms]") {
+TEST_CASE("Linear Conjugate Gradient", "[optimiser]") {
     // SPD tri-diagonal matrix
     const arma::mat A = {
             {4, 1, 0, 0, 0},
@@ -18,14 +18,14 @@ TEST_CASE("Linear Conjugate Gradient", "[algorithms]") {
     const arma::vec x0 = arma::zeros<arma::vec>(b.n_elem);
     const arma::vec x_ref = {0.16794872, 0.32820513, 0.51923077, 0.59487179, 1.10128205};
 
-    arma::vec x = algorithms::linear_conjugate_gradient(A, x0, b);
+    arma::vec x = optimiser::linear_conjugate_gradient(A, x0, b);
 
     REQUIRE(arma::approx_equal(x, x_ref, "reldiff", 1e-6));
 }
 
-TEST_CASE("Non-Linear Conjugate Gradient", "[algorithms]") {
+TEST_CASE("Non-Linear Conjugate Gradient", "[optimiser]") {
 
-    using namespace algorithms;
+    using namespace optimiser;
 
     // TODO Add rosenbrock + derivative
     FuncType f; // Assign me
@@ -41,13 +41,14 @@ TEST_CASE("Non-Linear Conjugate Gradient", "[algorithms]") {
             [my_reduction = reduction_factor,
              my_c1 = c1]
              (const FuncType & f,
-                     const DerFuncType & df,
-                     const arma::vec & x,
-                     const arma::vec & direction,
-                     double alpha0) -> double {
-        return algorithms::line_search_backtrack(f, df, x, direction, alpha0, my_reduction, my_c1);
+              const DerFuncType & df,
+              const arma::vec & x,
+              const arma::vec & direction,
+              double alpha0) -> double {
+        return optimiser::line_search_backtrack(f, df, x, direction, alpha0, my_reduction, my_c1);
     };
 
-    const auto cg_result = non_linear_conjugate_gradient(f, df, x0, line_search_func);
+    // Commented out until rosenbrock + derivative are implemented for testing
+//    const auto cg_result = non_linear_conjugate_gradient(f, df, x0, line_search_func);
 
 }

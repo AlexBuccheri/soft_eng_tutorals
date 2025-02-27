@@ -1,6 +1,9 @@
-# Library
-target_sources(algorithms_lib PRIVATE
-        cg.cpp
-        cg_stl.cpp
-)
+# Add source directories
+set(source_directories
+        optimisers
+        test_functions
+    )
 
+foreach (dir IN LISTS source_directories)
+    add_subdirectory(${dir})
+endforeach ()

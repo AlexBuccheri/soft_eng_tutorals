@@ -64,6 +64,18 @@ endif ()
 # Source location
 add_subdirectory(src)
 
+#[==============================================================================================[
+#                                         Utilities                                            #
+]==============================================================================================]
+
+# Current disabled because
+# a) throws up alot of stupid errors with my code
+# b) Throws up errors in arma and catch, which I do not care about (maybe disabling headers will avoid this)
+# Run clang tidy on cpp and headers
+#set(CMAKE_CXX_CLANG_TIDY
+#        clang-tidy;
+#        -header-filter=.;
+#        -checks=*;)
 
 #[==============================================================================================[
 #                                         Tests                                                #
@@ -82,6 +94,7 @@ target_link_libraries(UnitTests PRIVATE algorithms_lib Catch2::Catch2WithMain)
 
 # Make the project's headers visible to the tests
 target_include_directories(UnitTests PRIVATE ${CMAKE_SOURCE_DIR}/src)
+target_include_directories(UnitTests PRIVATE ${ARMADILLO_INCLUDE_DIRS})
 
 # Unit test source location
 add_subdirectory(unit_tests)
