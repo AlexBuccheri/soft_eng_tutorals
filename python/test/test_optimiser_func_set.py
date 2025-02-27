@@ -17,3 +17,4 @@ def test_derivative_rosenbrock():
     grad_fd = central_difference(rosenbrock, x_min)
     grad_analytic = derivative_rosenbrock(x_min)
     assert np.allclose(grad_analytic, grad_fd), "Global minimum"
+
