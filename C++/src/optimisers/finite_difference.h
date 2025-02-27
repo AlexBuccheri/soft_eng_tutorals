@@ -13,7 +13,7 @@ namespace finite_difference {
 using FuncType = std::function<double(const arma::vec&)>;
 
 // Define a derivative that accepts a vector and returns a vector of the same length.
-using DerFuncType = std::function<arma::vec&(const arma::vec&)>;
+using DerFuncType = std::function<arma::vec(const arma::vec&)>;
 
 arma::vec central_difference(const FuncType& f, const arma::vec& x);
 

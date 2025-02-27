@@ -70,3 +70,13 @@ then inject the implementation/method
   then inject the implementation/method
     - Inject some of the functions as arguments
     - Class design
+
+
+### External Packages
+
+#### C++
+
+* cmake and ninja
+* clang-format 
+* llvm (clang-tidy)
+* armadillo

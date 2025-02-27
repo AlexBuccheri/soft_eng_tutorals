@@ -35,7 +35,7 @@ arma::vec linear_conjugate_gradient(const arma::mat& a,
 using FuncType = std::function<double(const arma::vec&)>;
 
 // Define a derivative that accepts a vector and returns a vector of the same length.
-using DerFuncType = std::function<arma::vec&(const arma::vec&)>;
+using DerFuncType = std::function<arma::vec(const arma::vec&)>;
 
 // Store results of a conjugate gradient calculation
 struct CGResult {
