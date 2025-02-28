@@ -3,7 +3,7 @@
 #include <armadillo>
 #include <catch2/catch_all.hpp>
 
-#include "optimisers/cg.h"
+#include "optimisers/cg_arma.h"
 #include "test_functions/test_functions.h"
 
 TEST_CASE("Linear Conjugate Gradient", "[optimiser]") {

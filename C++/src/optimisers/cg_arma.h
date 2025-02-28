@@ -75,6 +75,11 @@ CGResult non_linear_conjugate_gradient(const FuncType& f,
     int max_iter = 1000,
     double tol = 1.e-6);
 
+// TODO Document me and implement me
+arma::mat update_hessian(const arma::vec &s,
+                         const arma::vec &y,
+                         const arma::mat &hess);
+
 }
 
-#endif // IMRESS_CG_H
+#endif

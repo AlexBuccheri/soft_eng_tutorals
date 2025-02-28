@@ -1,6 +1,8 @@
 #ifndef IMPRES_TEST_FUNCTIONS_H
 #define IMPRES_TEST_FUNCTIONS_H
 
+#include <armadillo>
+
 namespace test_functions {
 
 /*

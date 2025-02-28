@@ -1,6 +1,7 @@
+#include <assert.h>
 #include <armadillo>
 
-#include "cg.h"
+#include "cg_arma.h"
 
 namespace optimiser {
 
@@ -111,6 +112,21 @@ CGResult non_linear_conjugate_gradient(const FuncType& f,
     }
 
     return { x, max_iter };
+}
+
+arma::mat update_hessian(const arma::vec &s,
+                         const arma::vec &y,
+                         const arma::mat &hess){
+    const auto n = s.size();
+    assert(y.size() == n);
+    assert(hess.n_cols == n);
+    assert(hess.n_rows == n);
+
+    const double p = 1.0 / arma::dot(y, s);
+    const arma::mat identity = arma::eye(n, n);
+    const arma::rowvec s_t = s.t();
+
+    return (identity - p * s * y.t()) * hess * (identity - p * y * s_t) + (p * s * s_t);;
 }
 
 } // namespace optimiser
