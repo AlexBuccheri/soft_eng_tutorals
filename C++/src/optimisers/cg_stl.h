@@ -3,32 +3,37 @@
 
 #include <vector>
 
+#include "cg.h"
+
 namespace optimiser::stl {
+    
+    double dot(const vector& u, const vector& v);
 
-// Definition of a matrix
-using matrix = std::vector<std::vector<double>>;
+    double norm(const vector& v);
+    
+    vector matrix_vector_product(const matrix& a,
+        const vector& x);
 
-double dot(const std::vector<double>& u, const std::vector<double>& v);
+    vector vector_subtract(const vector& u,
+        const vector& v);
+    
+    vector vector_add(const vector& u,
+        const vector& v);
+    
+    vector vector_scale(const vector& u,
+        double alpha);
 
-double norm(const std::vector<double>& v);
+    namespace cg::linear{
+        vector linear_conjugate_gradient(const matrix& a,
+                                         const vector& x0,
+                                         const vector& b,
+                                         double tol = 1e-8,
+                                         int max_iter = 1000);
+    }
 
-std::vector<double> matrix_vector_product(const matrix& a,
-    const std::vector<double>& x);
-
-std::vector<double> linear_conjugate_gradient(const matrix& a,
-    const std::vector<double>& x0,
-    const std::vector<double>& b,
-    double tol = 1e-8,
-    int max_iter = 1000);
-
-std::vector<double> vector_subtract(const std::vector<double>& u,
-    const std::vector<double>& v);
-
-std::vector<double> vector_add(const std::vector<double>& u,
-    const std::vector<double>& v);
-
-std::vector<double> vector_scale(const std::vector<double>& u,
-    double alpha);
+    namespace cg::bfgs{
+        // TODO Implement BFGS with std containers and operations
+    }
 
 }
 

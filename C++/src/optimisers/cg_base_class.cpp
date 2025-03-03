@@ -1,7 +1,9 @@
-
+/*
+ * Methods of the class defined in "cg_base_class.h"
+ */
 #include "cg_base_class.h"
 
-namespace optimiser{
+namespace optimiser::armadillo::cg{
 
     CGResult NonLinearCG::minimize() {
         d = initialise_search_direction();

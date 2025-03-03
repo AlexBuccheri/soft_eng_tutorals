@@ -7,7 +7,7 @@
 #include "optimisers/cg_class.h"
 
 TEST_CASE("BFGS Child Class", "[optimiser]") {
-    using namespace optimiser;
+    using namespace optimiser::armadillo;
 
     const auto f = test_functions::rosenbrock;
     const auto df = test_functions::derivative_rosenbrock;
@@ -22,7 +22,7 @@ TEST_CASE("BFGS Child Class", "[optimiser]") {
     constexpr double reduction_factor = 0.5;
     constexpr double c1 = 1.e-4;
 
-    BFGS bfgs{f, df, x0, max_iter, tol, reduction_factor, c1};
+    cg::bfgs::BFGS bfgs{f, df, x0, max_iter, tol, reduction_factor, c1};
     const auto result = bfgs.minimize();
 
     REQUIRE(arma::approx_equal(result.x, x_ref, "both", 1.e-6, 1.e-5));

@@ -84,6 +84,6 @@ TEST_CASE("Linear Conjugate Gradient implemented with std::vector", "[optimiser]
     const std::vector<double> x0 = {0.0, 0.0, 0.0, 0.0, 0.0};
 
     const std::vector<double> x_ref = {0.16794872, 0.32820513, 0.51923077, 0.59487179, 1.10128205};
-    const auto x = optimiser::stl::linear_conjugate_gradient(a, x0, b);
+    const auto x = optimiser::stl::cg::linear::linear_conjugate_gradient(a, x0, b);
     REQUIRE_THAT( x, Catch::Matchers::Approx(x_ref) );
 }

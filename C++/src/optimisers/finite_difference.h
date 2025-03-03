@@ -1,22 +1,27 @@
 #ifndef IMPRES_FINITE_DIFFERENCE_H
 #define IMPRES_FINITE_DIFFERENCE_H
 
-#include <cmath>
-#include <functional>
-
 #include <armadillo>
 
-namespace finite_difference {
+#include "cg.h"
 
-// TODO Alex. These are defined here and in cg.h Should move to a single place
-// Define a mathematical function that evaluates a vector to a float.
-using FuncType = std::function<double(const arma::vec&)>;
+namespace finite_difference::armadillo {
 
-// Define a derivative that accepts a vector and returns a vector of the same length.
-using DerFuncType = std::function<arma::vec(const arma::vec&)>;
-
-arma::vec central_difference(const FuncType& f, const arma::vec& x);
+    /**
+     * @brief Computes the numerical gradient using central difference approximation.
+     *
+     * This function approximates the gradient of a scalar function using the central difference method.
+     * It perturbs each dimension of the input vector slightly and estimates the derivative.
+     * @note Central difference is not well-suited to oscillating functions like sin and cos, which
+     * can erroneously yield zero derivative.
+     *
+     * @tparam FuncType The type of the function that evaluates f(x).
+     * @param f The function for which the gradient is computed.
+     * @param x The point at which the gradient is estimated.
+     * @return The estimated gradient vector.
+     */
+    arma::vec central_difference(const optimiser::armadillo::FuncType& f, const arma::vec& x);
 
 }
 
-#endif // IMPRES_FINITE_DIFFERENCE_H
+#endif

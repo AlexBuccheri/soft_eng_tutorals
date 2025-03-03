@@ -11,7 +11,7 @@ TEST_CASE("Numeric vs analytic gradient for Rosenbrock function", "[test_functio
     const arma::vec x = {-1.2, 1.0};
     using namespace test_functions;
     const arma::vec grad_analytic = derivative_rosenbrock(x);
-    const arma::vec grad_fd = finite_difference::central_difference(rosenbrock, x);
+    const arma::vec grad_fd = finite_difference::armadillo::central_difference(rosenbrock, x);
 
     REQUIRE(arma::approx_equal(grad_analytic, grad_fd, "reldiff", 1e-6));
 }

@@ -1,9 +1,10 @@
 # Add to library
 target_sources(algorithms_lib PRIVATE
         cg_arma.cpp
-        cg_stl.cpp
-        finite_difference.cpp
         cg_base_class.cpp
         cg_class.cpp
+        cg_stl.cpp
+        finite_difference.cpp
+        line_search.cpp
 )
 
