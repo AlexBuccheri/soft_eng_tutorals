@@ -89,10 +89,26 @@ namespace optimiser::armadillo::cg {
     } // nonlinear
 
     namespace bfgs {
-        arma::mat init_hessian_or_coefficient() {
-            return arma::mat{};
+
+        arma::vec Traits::init_search_direction(arma::mat &hess, arma::vec &g){
+            return -hess * g;
         }
 
+        arma::mat Traits::init_hessian_or_coefficient(const arma::vec &x) {
+            const auto n = x.n_rows;
+            return arma::eye(n, n);
+        }
+
+        double Traits::line_search(const FuncType& f,
+                           const DerFuncType& df,
+                           const arma::vec& x,
+                           const arma::vec& direction,
+                           double alpha0,
+                           const LineSearchParam &params){
+            return line_search_backtrack(f, df, x, direction, alpha0, params.reduction_factor, params.c1);
+        }
+
+        // Interface required for class method
         arma::mat update_hessian(const arma::vec &s,
                                  const arma::vec &y,
                                  const arma::mat &hess){
@@ -107,6 +123,22 @@ namespace optimiser::armadillo::cg {
 
             return (identity - p * s * y.t()) * hess * (identity - p * y * s_t) + (p * s * s_t);;
         }
+
+        // Interface required for templated function
+        arma::mat Traits::update_hessian(const arma::vec &x,
+                                 const arma::vec &g,
+                                 const arma::vec &x_next,
+                                 const arma::vec &g_next,
+                                 const arma::mat &hess){
+            const arma::vec s = x_next - x;
+            const arma::vec y = g_next - g;
+            return bfgs::update_hessian(s, y, hess);
+        }
+
+        arma::vec Traits::update_search_direction(const arma::mat &hess, const arma::vec &g_next){
+            return -hess * g_next;
+        }
+
     } // bfgs
 
 }

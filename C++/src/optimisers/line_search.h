@@ -47,6 +47,10 @@ namespace optimiser::armadillo{
                                   double reduction_factor = 0.5,
                                   double c1 = 1.e-4);
 
+    struct LineSearchParam{
+        double reduction_factor = 0.5;
+        double c1 = 1.e-4;
+    };
 
 }
 
