@@ -1,5 +1,6 @@
 # Add source directories
 set(source_directories
+        derivatives
         optimisers
         test_functions
     )

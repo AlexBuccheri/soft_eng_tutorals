@@ -3,7 +3,7 @@
 #include <armadillo>
 #include <catch2/catch_all.hpp>
 
-#include "optimisers/finite_difference.h"
+#include "derivatives/finite_difference.h"
 #include "test_functions/test_functions.h"
 
 TEST_CASE("Numeric vs analytic gradient for Rosenbrock function", "[test_functions]") {

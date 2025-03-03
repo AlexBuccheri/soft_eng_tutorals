@@ -3,7 +3,7 @@
 
 #include <armadillo>
 
-#include "cg.h"
+#include "../optimisers/cg.h"
 
 namespace finite_difference::armadillo {
 
