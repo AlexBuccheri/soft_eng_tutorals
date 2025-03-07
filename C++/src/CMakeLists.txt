@@ -1,6 +1,7 @@
 # Add source directories
 set(source_directories
         derivatives
+        integration
         optimisers
         test_functions
     )
